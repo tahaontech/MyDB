@@ -2,17 +2,17 @@
 
 ![C++](https://camo.githubusercontent.com/c59efb57803dde7f352f4932a468a7f39fa2fb5f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f632532422532422d31312f31342f31372f32302d626c75652e737667)
 ![License](https://camo.githubusercontent.com/890acbdcb87868b382af9a4b1fac507b9659d9bf/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6c6963656e73652d4d49542d626c75652e737667)
-![Build CI Test](https://github.com/tahaontech/MyCmakeTemplate/workflows/Ubuntu%20CI%20Test/badge.svg)
-[![codecov](https://codecov.io/gh/tahaontech/MyCmakeTemplate/branch/master/graph/badge.svg)](https://codecov.io/gh/tahaontech/MyCmakeTemplate)
+![Build CI Test](https://github.com/tahaontech/MyDB/workflows/Ubuntu%20CI%20Test/badge.svg)
+[![codecov](https://codecov.io/gh/tahaontech/MyDB/branch/master/graph/badge.svg)](https://codecov.io/gh/tahaontech/MyDB)
 
-This is a template for C++ projects. What you get:
+This is a database C++ project. What you get:
 
 - Library, executable and test code separated in distinct folders.
 - Use of modern CMake for building and compiling.
 - External libraries fetched by CMake or cloned by Git.
 - External libraries installed and managed by [Conan](https://conan.io/) or [VCPKG](https://github.com/microsoft/vcpkg).
 - Unit testing using [Catch2](https://github.com/catchorg/Catch2)
-- General purpose libraries: [JSON](https://github.com/nlohmann/json), [spdlog](https://github.com/gabime/spdlog), [cxxopts](https://github.com/jarro2783/cxxopts) and [fmt](https://github.com/fmtlib/fmt).
+- [cxxopts](https://github.com/jarro2783/cxxopts)
 - Continuous integration testing with Github Actions.
 - Code coverage reports, including automatic upload to [Codecov](https://codecov.io).
 - Code documentation with [Doxygen](http://www.stack.nl/~dimitri/doxygen/).
@@ -21,7 +21,7 @@ This is a template for C++ projects. What you get:
 
 ``` text
 ├── CMakeLists.txt
-├── app
+├── app (cli)
 │   ├── CMakesLists.txt
 │   └── main.cc
 ├── cmake

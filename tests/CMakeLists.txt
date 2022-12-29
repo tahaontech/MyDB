@@ -1,8 +1,9 @@
 if (ENABLE_TESTING)
     set(TEST_MAIN    "unit_tests")
-    set(TEST_SOURCES "main.cc")
+    set(TEST_SOURCES "dbmanagement-tests.cc" "keyvalue-tests.cc" "tests.h")
 
     add_executable(${TEST_MAIN} ${TEST_SOURCES})
+    # add_executable("keyvalue_tests" "keyvalue-tests.cc" "tests.h")
 
     target_link_libraries(${TEST_MAIN} PUBLIC
         ${LIBRARY_NAME})

@@ -49,7 +49,7 @@ endif()
 
 ### EXTERNAL LIBRARIES
 
-add_git_submodule(external/json)
+# add_git_submodule(external/json)
 
 FetchContent_Declare(
     fmt

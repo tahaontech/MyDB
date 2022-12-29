@@ -1,71 +1,120 @@
+#include "config.hpp"
 #include <iostream>
-#include <fstream>
-#include <filesystem>
 
 #include <cxxopts.hpp>
-#include <fmt/format.h>
-#include <spdlog/spdlog.h>
-#include <nlohmann/json.hpp>
+#include "groundupdb.h"
 
-#include "config.hpp"
-#include "my_lib.h"
+using namespace std;
 
-using json = nlohmann::json;
-namespace fs = std::filesystem;
+cxxopts::Options options("groundupdb-cli", "CLI for GroundUpDB");
 
-int main(int argc, char **argv)
+void printUsage()
 {
-    const auto welcome_message = fmt::format("Welcome to {} v{}\n", project_name, project_version);
-    spdlog::info(welcome_message);
+    cout << "Whoops bad config!" << endl;
+}
 
-    cxxopts::Options options(project_name.data(), welcome_message);
-
-    options.add_options("arguments")
-        ("h,help", "Print usage")
-        ("f,filename", "File name", cxxopts::value<std::string>())
-        ("v,verbose", "Verbose output", cxxopts::value<bool>()->default_value("false"));
-
+int main(int argc, char* argv[])
+{
+    options.add_options()
+      ("c,create", "Create a DB")
+      ("d,destroy", "Destroy a DB")
+      ("s,set", "Set a key in a DB")
+      ("g,get", "Get a key from a DB")
+      ("n,name","Database name (required)", cxxopts::value<std::string>())
+      ("k,key","Key to set/get", cxxopts::value<std::string>())
+      ("v,value","Value to set", cxxopts::value<std::string>())
+    ;
     auto result = options.parse(argc, argv);
 
-    if (argc == 1 || result.count("help"))
+    if (result.count("c") == 1)
     {
-        std::cout << options.help() << '\n';
+        if (result.count("n") == 0)
+        {
+            cout << "You must specify a database name with -n <name>" << endl;
+            printUsage();
+            return 1;
+        }
+
+        std::string dbname(result["n"].as<std::string>());
+        Database db(GroundUpDB::createEmptyDB(dbname));
+        cout << "database initialized." << endl << "path: " << db.getDirectory() << endl;
         return 0;
     }
 
-    auto filename = std::string{};
-    auto verbose = false;
-
-    if (result.count("filename"))
+    if (result.count("d") == 1)
     {
-        filename = result["filename"].as<std::string>();
-    }
-    else
-    {
-        return 1;
-    }
+        if (result.count("n") == 0)
+        {
+            cout << "You must specify a database name with -n <name>" << endl;
+            printUsage();
+            return 1;
+        }
 
-    verbose = result["verbose"].as<bool>();
-
-    if (verbose)
-    {
-        fmt::print("Opening file: {}\n", filename);
+        std::string dbname(result["n"].as<std::string>());
+        Database db(GroundUpDB::loadDB(dbname));
+        db.destroy();
+        cout << "database destroyed." << endl;
+        return 0;
     }
 
-    auto ifs = std::ifstream{ filename };
-
-    if (!ifs.is_open())
+    if (result.count("s") == 1)
     {
-        return 1;
+        if (result.count("n") == 0)
+        {
+            cout << "You must specify a database name with -n <name>" << endl;
+            printUsage();
+            return 1;
+        }
+
+        if (result.count("k") == 0)
+        {
+            cout << "You must specify a key name with -k <key>" << endl;
+            printUsage();
+            return 1;
+        }
+
+        if (result.count("v") == 0)
+        {
+            cout << "You must specify a value with -v <value>" << endl;
+            printUsage();
+            return 1;
+        }
+
+        std::string dbname(result["n"].as<std::string>());
+        std::string k(result["k"].as<std::string>());
+        std::string v(result["v"].as<std::string>());
+        Database db(GroundUpDB::loadDB(dbname));
+        db.setKeyValue(k, v);
+        cout << "seted-> key: " << k << " , value: " << v << endl;
+        return 0;
     }
 
-    const auto parsed_data = json::parse(ifs);
-
-    if (verbose)
+    if (result.count("g") == 1)
     {
-        const auto name = parsed_data["name"];
-        fmt::print("Name: {}\n", name);
+        if (result.count("n") == 0)
+        {
+            cout << "You must specify a database name with -n <name>" << endl;
+            printUsage();
+            return 1;
+        }
+
+        if (result.count("k") == 0)
+        {
+            cout << "You must specify a key name with -k <key>" << endl;
+            printUsage();
+            return 1;
+        }
+
+        std::string dbname(result["n"].as<std::string>());
+        std::string k(result["k"].as<std::string>());
+        
+        Database db(GroundUpDB::loadDB(dbname));
+        std::string v(db.getKeyValue(k));
+        cout << "get-> key: " << k << endl << "value: " << v << endl;
+        return 0;
     }
 
-    return 0;
+    cout << "no commands specified" << endl;
+    printUsage();
+    return 1;
 }
